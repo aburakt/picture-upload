@@ -5,12 +5,9 @@ import 'primereact/resources/themes/saga-blue/theme.css'; // Theme for PrimeReac
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
-import { AuthProvider } from './auth/AuthContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-  </React.StrictMode>,
+    <App />
+  </React.StrictMode>
 )
