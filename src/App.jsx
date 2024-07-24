@@ -1,7 +1,7 @@
 // src/App.jsx
 import React from 'react';
-import { Redirect, Route, BrowserRouter as Router, Switch } from 'react-router-dom';
-import { RecoilRoot, useRecoilValue } from 'recoil';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import Header from './components/Header';
 import DownloadPicture from './pages/DownloadPicture';
 import FileCheck from './pages/FileCheck';
@@ -12,17 +12,10 @@ import { authState } from './store';
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const isAuthenticated = useRecoilValue(authState);
 
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        isAuthenticated ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/login" />
-        )
-      }
-    />
+  return isAuthenticated ? (
+    <Component {...rest} />
+  ) : (
+    <Navigate to="/login" replace />
   );
 };
 
@@ -30,18 +23,16 @@ const App = () => {
   const isAuthenticated = useRecoilValue(authState);
 
   return (
-    <RecoilRoot>
-      <Router>
-        <Header isAuthenticated={isAuthenticated} />
-        <Switch>
-          <Route path="/login" component={Login} />
-          <ProtectedRoute path="/download-picture" component={DownloadPicture} />
-          <ProtectedRoute path="/upload-picture" component={UploadPicture} />
-          <ProtectedRoute path="/file-check" component={FileCheck} />
-          <Redirect from="/" to="/download-picture" />
-        </Switch>
-      </Router>
-    </RecoilRoot>
+    <Router>
+      <Header isAuthenticated={isAuthenticated} />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/download-picture" element={<ProtectedRoute component={DownloadPicture} />} />
+        <Route path="/upload-picture" element={<ProtectedRoute component={UploadPicture} />} />
+        <Route path="/file-check" element={<ProtectedRoute component={FileCheck} />} />
+        <Route path="*" element={<Navigate to="/download-picture" replace />} />
+      </Routes>
+    </Router>
   );
 };
 
